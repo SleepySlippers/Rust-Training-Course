@@ -10,7 +10,11 @@ use std::collections::{HashMap, HashSet};
 // element in the array. If the array has fewer than 2 elements, return `None`.
 
 pub fn second_largest(vec: &[i32]) -> Option<i32> {
-    !unimplemented!()
+    if vec.len() < 2 {
+        return None;
+    }
+    let max = vec.iter().max().unwrap();
+    vec.iter().filter(|&x| x != max).max().copied()
 }
 
 // ----- 2 --------------------------------------
@@ -20,6 +24,8 @@ pub fn second_largest(vec: &[i32]) -> Option<i32> {
 // For the simplicity, assume that there is only one longest increasing subsequence.
 
 pub fn longest_increasing_subsequence(init_sequence: &[i32]) -> Vec<i32> {
+    _ = init_sequence;
+    #[allow(unreachable_code)]
     !unimplemented!()
 }
 
@@ -31,7 +37,10 @@ pub fn longest_increasing_subsequence(init_sequence: &[i32]) -> Vec<i32> {
 // sentence but does not reverse the characters inside each word.
 
 pub fn reverse_words(sentence: &str) -> String {
-    !unimplemented!()
+    sentence.split_whitespace().rev().fold(String::from(""), |acc, s| {
+        let space = if acc.is_empty() { "" } else { " " };
+        acc + space + s
+    })
 }
 
 // ----- 4 --------------------------------------
@@ -42,7 +51,13 @@ pub fn reverse_words(sentence: &str) -> String {
 //   "пРеВеД МеДвЕд -> Превед медвед"
 
 pub fn normalize_and_capitalize(sentence: &str) -> String {
-    !unimplemented!()
+    sentence.split_whitespace().fold(String::from(""), |acc, s| {
+        let mut it = s.chars();
+        let space = if acc.is_empty() { "" } else { " " };
+        acc + space
+            + &it.next().unwrap().to_uppercase().collect::<String>()
+            + &it.as_str().to_lowercase()
+    })
 }
 
 // HASH SET
@@ -53,7 +68,13 @@ pub fn normalize_and_capitalize(sentence: &str) -> String {
 // characters (ignoring case), and false otherwise.
 
 pub fn unique_chars(s: &str) -> bool {
-    !unimplemented!()
+    s.chars()
+        .fold(&mut HashSet::<char>::new(), |set, ch| {
+            set.insert(ch);
+            set
+        })
+        .len()
+        == s.chars().count()
 }
 
 // HASH MAP
@@ -65,5 +86,15 @@ pub fn unique_chars(s: &str) -> bool {
 // vector, return all of them.
 
 pub fn top_k_frequent(nums: Vec<i32>, k: usize) -> Vec<i32> {
-    !unimplemented!()
+    let mut freqs = nums
+        .iter()
+        .fold(&mut HashMap::<i32, u32>::new(), |set, val| {
+            set.entry(*val).and_modify(|x| *x += 1).or_insert(1);
+            set
+        })
+        .iter()
+        .map(|(&k, &v)| (v, k))
+        .collect::<Vec<(u32, i32)>>();
+    freqs.sort_by(|(a, _), (x, _)| x.cmp(a));
+    freqs.into_iter().map(|(_, b)| b).take(k).collect()
 }
