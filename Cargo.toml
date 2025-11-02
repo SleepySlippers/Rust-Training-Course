@@ -4,3 +4,30 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+
+[features]
+c10_concurrency = []
+c11_async = []
+c12_unsafe_advanced_traits_macros = []
+c1_common_concepts = []
+c3_ownership_and_memory = []
+c4_structs_methods_enums_pattern_matching = []
+c5_collections = []
+c6_error_handling_tests_docs = []
+c7_generics_traits_lifetimes = []
+c8_iterators_and_closures = []
+c9_smart_pointers = []
+
+default = [
+    "c10_concurrency",
+    "c11_async",
+    "c12_unsafe_advanced_traits_macros",
+    "c1_common_concepts",
+    "c3_ownership_and_memory",
+    "c4_structs_methods_enums_pattern_matching",
+    "c5_collections",
+    "c6_error_handling_tests_docs",
+    "c7_generics_traits_lifetimes",
+    "c8_iterators_and_closures",
+    "c9_smart_pointers",
+]

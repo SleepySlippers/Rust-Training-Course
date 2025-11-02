@@ -4,24 +4,62 @@
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+# Tasks list to enable and not to have merge conflicts
+# just uncomment when task is done and ready to be checked
+TASKS_TO_ANALYZE =
+# ---------------------
+# TASKS_TO_ANALYZE += c1_common_concepts
+# ---------------------
+# TASKS_TO_ANALYZE += c3_ownership_and_memory
+# ---------------------
+# TASKS_TO_ANALYZE += c4_structs_methods_enums_pattern_matching
+# ---------------------
+# TASKS_TO_ANALYZE += c5_collections
+# ---------------------
+# TASKS_TO_ANALYZE += c6_error_handling_tests_docs
+# ---------------------
+# TASKS_TO_ANALYZE += c7_generics_traits_lifetimes
+# ---------------------
+# TASKS_TO_ANALYZE += c8_iterators_and_closures
+# ---------------------
+# TASKS_TO_ANALYZE += c9_smart_pointers
+# ---------------------
+# TASKS_TO_ANALYZE += c10_concurrency
+# ---------------------
+# TASKS_TO_ANALYZE += c11_async
+# ---------------------
+# TASKS_TO_ANALYZE += c12_unsafe_advanced_traits_macros
+# ---------------------
+
+.PHONY: check_empty
+check_empty:
+	@[ -n "$(TASKS_TO_ANALYZE)" ] || ( echo "\033[31m No tasks enabled for analysis!\nPlease check the Makefile to enable at least one task. \033[0m" && false )
+
 # -- linting --------------------------------------------------------------------------------------
 
 .PHONY: clippy
-clippy: ## Runs Clippy with configs
-	cargo clippy --workspace --all-targets --all-features -- -D warnings
+clippy: check_empty ## Runs Clippy with configs
+	cargo clippy --workspace --all-targets --features "$(TASKS_TO_ANALYZE)" -- -D warnings
 
 
 .PHONY: fix
-fix: ## Runs Fix with configs
-	cargo fix --workspace --allow-staged --allow-dirty --all-targets --all-features
+fix: check_empty ## Runs Fix with configs
+	cargo fix --workspace --allow-staged --allow-dirty --all-targets --features "$(TASKS_TO_ANALYZE)"
 
 
 .PHONY: format
-format: ## Runs Format using nightly toolchain
+format: check_empty ## Runs Format using nightly toolchain
 	cargo +nightly fmt --all
 
 .PHONY: lint
-lint: ## Runs all linting tasks at once (Clippy, fixing, formatting, typos)
+lint: check_empty ## Runs all linting tasks at once (Clippy, fixing, formatting, typos)
 	$(MAKE) format
 	$(MAKE) fix
 	$(MAKE) clippy
+
+.PHONY: test
+test: check_empty ## Runs tests
+	cargo test --workspace --all-targets --features "$(TASKS_TO_ANALYZE)"
+
+.PHONY: all
+all: lint test ## Runs lint + test
