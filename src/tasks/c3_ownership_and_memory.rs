@@ -9,9 +9,12 @@
 // can still be used.
 //
 // You can implement the function and use it right inside the `string_ownership` function.
+fn longest_owned(s1: String, s2: String) -> String {
+    if s1.len() > s2.len() { s1 } else { s2 }
+}
 #[allow(dead_code)]
 pub fn string_ownership() {
-    !unimplemented!()
+    longest_owned(String::from("ABOBA"), String::from("ABOBUS"));
 }
 
 // BORROWING
@@ -23,9 +26,14 @@ pub fn string_ownership() {
 // show that it was not moved and still available.
 //
 // You can implement the function and use it right inside the `simple_borrowing` function.
+fn print_length(s: &str) {
+    println!("{}", s.len())
+}
 #[allow(dead_code)]
 pub fn simple_borrowing() {
-    !unimplemented!()
+    let s = String::from("censored");
+    print_length(&s);
+    println!("{s}");
 }
 
 // ----- 3 --------------------------------------
@@ -34,9 +42,18 @@ pub fn simple_borrowing() {
 // to check that the string was borrowed, not moved.
 //
 // You can implement the function and use it right inside the `hard_borrowing` function.
+fn append_and_return_length(string: &mut String, suffix: &str) -> usize {
+    string.push_str(suffix);
+    string.len()
+}
 #[allow(dead_code)]
 pub fn hard_borrowing() {
-    !unimplemented!()
+    let mut s = String::from("ABO");
+    let suff = String::from("BA");
+    println!("{}", append_and_return_length(&mut s, &suff));
+    println!("{}", append_and_return_length(&mut s, &suff));
+    println!("{}", append_and_return_length(&mut s, &suff));
+    println!("{}", append_and_return_length(&mut s, &suff));
 }
 
 // SLICES
@@ -46,12 +63,15 @@ pub fn hard_borrowing() {
 // Write a function last_word(s: &str) -> &str that returns the last word from a string slice.
 // Assume words are separated by spaces.
 pub fn last_word(slice: &str) -> &str {
-    !unimplemented!()
+    slice.split_whitespace().last().unwrap_or(slice)
 }
 
 // ----- 5 --------------------------------------
 // Write a function longest_word(sentence: &str) -> &str that returns the longest word in a
 // sentence (string slice). If several words have the same maximum length, return the last one.
 pub fn longest_word(sentence: &str) -> &str {
-    !unimplemented!()
+    sentence
+        .split_whitespace()
+        .max_by(|x, y| x.len().cmp(&y.len()))
+        .unwrap_or(sentence)
 }
